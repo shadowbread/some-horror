@@ -12,20 +12,71 @@ map_size_x, map_size_y = 600, 600
 # min_x = 0
 # max_x = 800
 # min_y, max_y = 0, 800 
+
+angry_square_y = 100
+angry_square_to = 1
+thorns = [
+	{'x': 250, 'y': 10, 'time': 50, 'condition': True},
+	{'x': 300, 'y': 10, 'time': 50, 'condition': True},
+	{'x': 350, 'y': 10, 'time': 50, 'condition': True},
+	]
+
+
 walls = [
 	{'x': 100, 'y': 0, 'width': 5, 'height':100},
 	{'x': 0, 'y': 150, 'width': 150, 'height':5},
-        {'x': 150, 'y': 100, 'width': 5, 'height':150},
-        {'x': 70, 'y': 250, 'width': 150, 'height':5},
-        {'x': 215, 'y': 150, 'width': 5, 'height':100},
-        {'x': 215, 'y': 200, 'width': 150, 'height':5},
-        {'x': 300, 'y': 200, 'width': 5, 'height':300},
-        {'x': 0, 'y': 500, 'width': 200, 'height':5},
-        {'x': 100, 'y': 450, 'width': 200, 'height':5},
-        {'x': 0, 'y': 400, 'width': 200, 'height':5},
-        {'x': 100, 'y': 350, 'width': 200, 'height':5},
-        {'x': 300, 'y': 100, 'width': 450, 'height':5},
+    {'x': 150, 'y': 100, 'width': 5, 'height':150},
+    {'x': 70, 'y': 250, 'width': 150, 'height':5},
+    {'x': 215, 'y': 150, 'width': 5, 'height':100},
+    {'x': 215, 'y': 200, 'width': 150, 'height':5},
+    {'x': 300, 'y': 200, 'width': 5, 'height':300},
+    {'x': 0, 'y': 500, 'width': 200, 'height':5},
+    {'x': 100, 'y': 450, 'width': 200, 'height':5},
+    {'x': 0, 'y': 400, 'width': 200, 'height':5},
+    {'x': 100, 'y': 350, 'width': 200, 'height':5},
+    {'x': 250, 'y': 50, 'width': 400, 'height':5},
+    {'x': 500, 'y': 50, 'width': 5, 'height':100},
+    {'x': 450, 'y': 450, 'width': 250, 'height':5},
+    {'x': 450, 'y': 250, 'width': 5, 'height':200},
 	]
+
+def thorns_draw():
+	global map_x, map_y, screen, thorns
+	for i in range(len(thorns)):
+		thorns[i]['time'] -= 1
+		if thorns[i]['time'] <= 0:
+			if thorns[i]['condition']:
+				thorns[i]['condition'] = False
+				thorns[i]['time'] = 50
+			else:
+				thorns[i]['condition'] = True
+				thorns[i]['time'] = 50
+	for i in range(len(thorns)):
+		if thorns[i]['condition']:
+			if map_y >= thorns[i]['y'] and map_y <= thorns[i]['y'] + 30:
+				if map_x >= thorns[i]['x'] and map_x <= thorns[i]['x'] + 30:
+					map_x = 25
+					map_y = 25
+	for i in thorns:
+		if i['condition']:
+			pygame.draw.rect(screen, (200, 200 ,200), ((width / 2 ) - map_x + i['x'], (height / 2) - map_y + i['y'], 30, 30))
+		else:
+			pygame.draw.rect(screen, (200, 200 ,200), ((width / 2 ) - map_x + i['x'], (height / 2) - map_y + i['y'], 30, 30), 2)
+
+def angry_square():
+	#x 70 down 250 up 100
+	global angry_square_y, angry_square_to, map_x, map_y, screen
+	x = 170
+	if angry_square_y >= 230:
+		angry_square_to = -1
+	elif angry_square_y <= 110:
+		angry_square_to = 1
+	angry_square_y += 3 * angry_square_to
+	pygame.draw.rect(screen, (255, 0 ,0), ((width / 2 ) - map_x + x, (height / 2) - map_y + angry_square_y, 30, 30))
+	if map_x >= x and map_x <= x + 20:
+		if map_y >= angry_square_y and map_y <= angry_square_y + 20:
+			map_y = 25
+			map_x = 25
 
 def draw_walls():
 	global screen, walls, width, height
@@ -83,6 +134,8 @@ def game():
 	keyboard()
 	draw_map()
 	draw_walls()
+	thorns_draw()
+	angry_square()
 	draw_player()
 
 while True:
