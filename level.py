@@ -1,5 +1,5 @@
 import wall
-# import thorns
+import thorns
 import angry_square
 
 class Level():
@@ -21,3 +21,5 @@ class Level():
 		self.angry_squares.append(angry_square.Angry_square(x, y, axis, fp, sp, speed))
 	def add_wall(self, x, y, w, h):
 		self.walls.append(wall.Wall(x, y, w, h))
+	def add_thorn(self, x, y, time):
+		self.thorns.append(thorns.Thorn(x, y, time))
